@@ -1,0 +1,7 @@
+[package]
+name = "lists"
+version = "0.1.0"
+authors = ["Esty Thomas <esty@umich.edu>"]
+edition = "2018"
+
+[dependencies]
