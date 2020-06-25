@@ -1,3 +1,5 @@
+// TOOD: https://rust-unofficial.github.io/too-many-lists/second-into-iter.html
+
 pub struct List<T> {
     head: Link<T>,
 }
