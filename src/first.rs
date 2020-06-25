@@ -14,6 +14,19 @@ enum Link {
     More(Box<Node>),
 }
 
+impl Drop for List {
+    fn drop(&mut self) {
+        let mut cur_link = mem::replace(&mut self.head, Link::Empty);
+        // `while let` == "do this thing until this pattern doesn't match"
+        while let Link::More(mut boxed_node) = cur_link {
+            cur_link = mem::replace(&mut boxed_node.next, Link::Empty);
+            // boxed_node goes out of scope and gets dropped here;
+            // but its Node's `next` field has been set to Link::Empty
+            // so no unbounded recursion occurs.
+        }
+    }
+}
+
 impl List {
     pub fn new() -> Self {
         List { head: Link::Empty }
@@ -88,5 +101,15 @@ mod test {
         // Check exhaustion
         assert_eq!(list.pop(), Some(1));
         assert_eq!(list.pop(), None);
+    }
+
+    #[test]
+    fn big_stack() {
+        let mut list = List::new();
+        for i in 1..1000000 {
+            list.push(i);
+        }
+
+        // stack overflow in drop?
     }
 }
